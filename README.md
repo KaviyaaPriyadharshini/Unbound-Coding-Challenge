@@ -5,12 +5,7 @@
 - [Overview](#overview)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
-- [Setup Instructions](#setup-instructions)
-- [Usage](#usage)
 - [API Endpoints](#api-endpoints)
-- [Project Structure](#project-structure)
-- [Demo](#demo)
-- [Contributors](#contributors)
 
 ---
 
@@ -36,6 +31,40 @@ Modular Django backend with PostgreSQL integration.
 - **sqlite3** (Database for storing models & regex rules)
 
 ### **Frontend**
-- **HTML, CSS, JavaScript** (Minimal chat UI)
-- **Bootstrap / Tailwind CSS** (For styling)
+- **HTML** (Minimal chat UI)
+- **Tailwind CSS** (For styling)
 
+
+## API Endpoints
+
+###  Fetch Models
+```http
+GET /api/models/
+["openai/gpt-3.5", "anthropic/claude-v1", "gemini/gemini-alpha"]
+```
+
+###  Chat Completion
+```http
+POST /api/chat/completions/
+{
+  "provider": "openai",
+  "model": "gpt-3.5",
+  "prompt": "Hello world!"
+}
+{
+  "provider": "openai",
+  "model": "gpt-3.5",
+  "response": "OpenAI: Processed your prompt with advanced language understanding."
+}
+```
+
+###  Admin - Add Routing Rule
+
+```http
+POST /api/admin/routing-rules/
+{
+  "original_model": "gpt-4o",
+  "regex": "(?i)(credit card)",
+  "redirect_model": "gemini-alpha"
+}
+```
