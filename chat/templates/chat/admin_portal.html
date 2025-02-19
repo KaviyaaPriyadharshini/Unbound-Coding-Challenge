@@ -3,199 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Regex Policies</title>
-    
-    <style>
-        /* General Styling */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1e1e2e;
-            color: #ffffff;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Container */
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #2a2a3a;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        }
-
-        /* Headings */
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        /* Form */
-        .form-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        input {
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #888;
-            border-radius: 4px;
-            background-color: #333;
-            color: white;
-        }
-
-        button {
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Table */
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            border: 1px solid #555;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #444;
-        }
-
-        tr:nth-child(even) {
-            background-color: #333;
-        }
-
-        /* Delete Button */
-        .delete-btn {
-            background-color: #ff4444;
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .delete-btn:hover {
-            background-color: #cc0000;
-        }
-    </style>
+    <title>Admin Portal - File Type & Regex Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <h1>⚙️ Admin - Regex Policies</h1>
-        
-        <!-- Form to Add New Regex Rule -->
-        <div class="form-container">
-            <label for="regexPattern">Regex Pattern:</label>
-            <input type="text" id="regexPattern" placeholder="Enter regex pattern">
+<body class="bg-gray-900 text-white p-6">
+    <div class="max-w-3xl mx-auto bg-gray-800 shadow-lg rounded-lg p-6">
+        <h2 class="text-2xl font-bold text-center mb-4">⚙️ Admin - File Type Management</h2>
 
-            <label for="originalModel">Original Model:</label>
-            <input type="text" id="originalModel" placeholder="Enter original model">
+        <form id="addFileTypeForm" class="mb-6">
+            <label class="block text-gray-300 mb-1">File Type:</label>
+            <input type="text" id="file_type" class="w-full p-2 mb-3 bg-gray-700 rounded text-white" required>
 
-            <label for="redirectModel">Redirect Model:</label>
-            <input type="text" id="redirectModel" placeholder="Enter redirect model">
+            <label class="block text-gray-300 mb-1">Provider:</label>
+            <input type="text" id="provider" class="w-full p-2 mb-3 bg-gray-700 rounded text-white" required>
 
-            <button onclick="addRegexRule()">➕ Add Regex Rule</button>
-        </div>
+            <label class="block text-gray-300 mb-1">Model:</label>
+            <input type="text" id="model" class="w-full p-2 mb-3 bg-gray-700 rounded text-white" required>
 
-        <!-- Existing Regex Rules -->
-        <h2>🔍 Existing Regex Rules:</h2>
-        <table id="regexTable">
-            <thead>
-                <tr>
-                    <th>Regex Pattern</th>
-                    <th>Original Model</th>
-                    <th>Redirect Model</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td colspan="4">Loading...</td></tr>
-            </tbody>
-        </table>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded transition-all">
+                ➕ Add File Type
+            </button>
+        </form>
+
+        <h3 class="text-lg font-semibold mt-6">📂 Existing File Type Configurations:</h3>
+        <ul id="fileTypeList" class="mt-2 bg-gray-700 p-3 rounded">
+            <li class="text-gray-400">Loading...</li>
+        </ul>
+    </div>
+
+    <div class="max-w-3xl mx-auto bg-gray-800 shadow-lg rounded-lg p-6 mt-8">
+        <h2 class="text-2xl font-bold text-center mb-4">⚙️ Admin - Regex Policies</h2>
+
+        <form id="addRegexForm" class="mb-6">
+            <label class="block text-gray-300 mb-1">Regex Pattern:</label>
+            <input type="text" id="regex_pattern" class="w-full p-2 mb-3 bg-gray-700 rounded text-white" required>
+
+            <label class="block text-gray-300 mb-1">Original Model:</label>
+            <input type="text" id="original_model" class="w-full p-2 mb-3 bg-gray-700 rounded text-white" required>
+
+            <label class="block text-gray-300 mb-1">Redirect Model:</label>
+            <input type="text" id="redirect_model" class="w-full p-2 mb-3 bg-gray-700 rounded text-white" required>
+
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded transition-all">
+                ➕ Add Regex Rule
+            </button>
+        </form>
+
+        <h3 class="text-lg font-semibold mt-6">🔍 Existing Regex Rules:</h3>
+        <ul id="regexList" class="mt-2 bg-gray-700 p-3 rounded">
+            <li class="text-gray-400">Loading...</li>
+        </ul>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", fetchRegexRules);
+        async function fetchFileTypes() {
+            const response = await fetch("/admin/file-types/");
+            const data = await response.json();
+            const list = document.getElementById("fileTypeList");
+            list.innerHTML = "";
 
-        function fetchRegexRules() {
-            fetch("http://127.0.0.1:8000/admin/get_regex_rules")
-                .then(response => response.json())
-                .then(data => {
-                    let tbody = document.querySelector("#regexTable tbody");
-                    tbody.innerHTML = "";
-
-                    data.rules.forEach(rule => {
-                        let row = `<tr>
-                            <td>${rule.regex_pattern}</td>
-                            <td>${rule.original_model}</td>
-                            <td>${rule.redirect_model}</td>
-                            <td><button class="delete-btn" onclick="deleteRule(${rule.id})">❌ Delete</button></td>
-                        </tr>`;
-                        tbody.innerHTML += row;
-                    });
-                })
-                .catch(error => console.error("Error fetching regex rules:", error));
+            data.forEach(fileType => {
+                const item = document.createElement("li");
+                item.classList.add("mb-2", "flex", "justify-between", "bg-gray-600", "p-2", "rounded");
+                
+                item.innerHTML = `
+                    <span>${fileType.file_type} → ${fileType.provider} (${fileType.model})</span>
+                    <div>
+                        <button onclick="deleteFileType(${fileType.id})" class="bg-red-500 px-2 rounded ml-2">🗑️</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
         }
 
-        function addRegexRule() {
-            let regexPattern = document.getElementById("regexPattern").value;
-            let originalModel = document.getElementById("originalModel").value;
-            let redirectModel = document.getElementById("redirectModel").value;
+        async function addFileType(event) {
+            event.preventDefault();
+            const file_type = document.getElementById("file_type").value;
+            const provider = document.getElementById("provider").value;
+            const model = document.getElementById("model").value;
 
-            if (!regexPattern || !originalModel || !redirectModel) {
-                alert("All fields are required!");
-                return;
-            }
-
-            let data = { regex_pattern: regexPattern, original_model: originalModel, redirect_model: redirectModel };
-
-            fetch("http://127.0.0.1:8000/admin/add_regex_rule", {
+            const response = await fetch("/admin/file-types/add/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.message) {
-                    alert("Rule added successfully!");
-                    fetchRegexRules(); // Refresh list
-                } else {
-                    alert("Error: " + result.error);
-                }
-            })
-            .catch(error => console.error("Error adding rule:", error));
+                body: JSON.stringify({ file_type, provider, model })
+            });
+
+            if (response.ok) {
+                fetchFileTypes();
+                document.getElementById("addFileTypeForm").reset();
+            }
         }
 
-        function deleteRule(ruleId) {
-            fetch(`http://127.0.0.1:8000/admin/delete_regex_rule/${ruleId}/`, {
-                method: "DELETE"
-            })
-            .then(response => response.json())
-            .then(result => {
-                alert(result.message);
-                fetchRegexRules(); // Refresh list
-            })
-            .catch(error => console.error("Error deleting rule:", error));
+        async function deleteFileType(id) {
+            await fetch(`/admin/file-types/${id}/delete/`, { method: "DELETE" });
+            fetchFileTypes();
         }
+
+        async function fetchRegexPolicies() {
+            const response = await fetch("/admin/get_regex_rules/");
+            const data = await response.json();
+            const list = document.getElementById("regexList");
+            list.innerHTML = "";
+
+            data.rules.forEach(policy => {
+                const item = document.createElement("li");
+                item.classList.add("mb-2", "flex", "justify-between", "bg-gray-600", "p-2", "rounded");
+
+                item.innerHTML = `
+                    <span>${policy.regex_pattern} → ${policy.redirect_model}</span>
+                    <div>
+                        <button onclick="deletePolicy(${policy.id})" class="bg-red-500 px-2 rounded ml-2">🗑️</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        async function addRegexPolicy(event) {
+            event.preventDefault();
+            const regex_pattern = document.getElementById("regex_pattern").value;
+            const original_model = document.getElementById("original_model").value;
+            const redirect_model = document.getElementById("redirect_model").value;
+
+            const response = await fetch("/admin/add_regex_rule/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ regex_pattern, original_model, redirect_model })
+            });
+
+            if (response.ok) {
+                fetchRegexPolicies();
+                document.getElementById("addRegexForm").reset();
+            }
+        }
+
+        async function deletePolicy(id) {
+            await fetch(`/admin/delete_regex_rule/${id}/`, { method: "DELETE" });
+            fetchRegexPolicies();
+        }
+
+        document.getElementById("addFileTypeForm").addEventListener("submit", addFileType);
+        document.getElementById("addRegexForm").addEventListener("submit", addRegexPolicy);
+        document.addEventListener("DOMContentLoaded", () => { fetchFileTypes(); fetchRegexPolicies(); });
     </script>
 </body>
 </html>

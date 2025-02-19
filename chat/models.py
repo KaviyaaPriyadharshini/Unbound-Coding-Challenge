@@ -15,11 +15,11 @@ class RegexRoutingPolicy(models.Model):
 
     def __str__(self):
         return f"{self.regex_pattern} → {self.redirect_model}"
-    
-class FileRouting(models.Model):
-    file_type = models.CharField(max_length=50, unique=True)  # e.g., PDF, DOCX, CSV
-    provider = models.CharField(max_length=100)  # e.g., OpenAI, Anthropic
-    model = models.CharField(max_length=100)  # e.g., gpt-4, claude-v1
+
+class FileUploadRouting(models.Model):
+    file_type = models.CharField(max_length=50, unique=True)
+    provider = models.CharField(max_length=50)
+    model = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"{self.file_type} → {self.provider} ({self.model})"
+        return f"{self.file_type} -> {self.provider} ({self.model})"

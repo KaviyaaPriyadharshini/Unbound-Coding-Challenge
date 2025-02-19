@@ -19,7 +19,6 @@ def generate_gemini_response(prompt):
         "response": f"Gemini: Your prompt '{prompt}' was processed using Gemini AI.\nResponse ID: gemini_response_003"
     }
 
-# Stub Router
 PROVIDER_RESPONSE_MAP = {
     "openai": generate_openai_response,
     "anthropic": generate_anthropic_response,

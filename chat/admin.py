@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import FileRouting, RegexRoutingPolicy
+from .models import RegexRoutingPolicy, FileUploadRouting
 
 class RegexRoutingPolicyAdmin(admin.ModelAdmin):
     list_display = ('regex_pattern', 'original_model', 'redirect_model')
@@ -7,7 +7,7 @@ class RegexRoutingPolicyAdmin(admin.ModelAdmin):
 
 admin.site.register(RegexRoutingPolicy, RegexRoutingPolicyAdmin)
 
-@admin.register(FileRouting)
-class FileRoutingAdmin(admin.ModelAdmin):
-    list_display = ("file_type", "provider", "model")
-    search_fields = ("file_type", "provider", "model")
+@admin.register(FileUploadRouting)
+class FileUploadRoutingAdmin(admin.ModelAdmin):
+    list_display = ('file_type', 'provider', 'model')
+    search_fields = ('file_type',)

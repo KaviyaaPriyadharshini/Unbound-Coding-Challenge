@@ -1,13 +1,11 @@
 import os
 import django
 
-# ✅ Set up Django environment (Replace "config" with your actual Django project name)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ChatAI.settings")
 django.setup()
 
 from chat.models import RegexRoutingRule
 
-# ✅ Add regex rules
 rules = [
     ("gpt-4o", "(?i)(credit card)", "gemini-alpha"),
     ("gpt-4o", "(?i)(social security number)", "anthropic/claude-v1")
