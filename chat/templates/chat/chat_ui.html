@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Interface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="flex flex-col items-center justify-center min-h-screen">
+        <div class="bg-gray-800 shadow-lg rounded-lg p-6 w-full max-w-xl">
+            <h2 class="text-2xl font-bold text-center mb-4">🔮 AI Chat Interface</h2>
+
+            <!-- Provider & Model Selection -->
+            <div class="mb-4">
+                <label class="block text-gray-300 text-sm font-semibold">Select Provider:</label>
+                <select id="provider" class="w-full p-2 bg-gray-700 rounded text-white"></select>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-300 text-sm font-semibold">Select Model:</label>
+                <select id="model" class="w-full p-2 bg-gray-700 rounded text-white"></select>
+            </div>
+
+            <!-- Input & Submit Button -->
+            <div class="mb-4">
+                <label class="block text-gray-300 text-sm font-semibold">Enter Prompt:</label>
+                <input type="text" id="prompt" class="w-full p-2 bg-gray-700 rounded text-white focus:outline-none" placeholder="Type your message...">
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="mb-4">
+                <label class="block text-gray-300 text-sm font-semibold">Upload File (PDF only):</label>
+                <input type="file" id="fileInput" class="w-full p-2 bg-gray-700 rounded text-white" accept=".pdf">
+                <button onclick="uploadFile()" class="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded mt-2 transition-all">
+                    📤 Upload File
+                </button>
+            </div>
+
+            <button onclick="sendRequest()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded transition-all">
+                🚀 Send
+            </button>
+
+            <!-- Response Box -->
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold">Response:</h3>
+                <pre id="response" class="bg-gray-700 p-3 rounded mt-2 text-green-400 whitespace-pre-wrap">
+Waiting for response...
+                </pre>
+            </div>
+
+            <!-- File Upload Status -->
+            <div class="mt-4">
+                <h3 class="text-lg font-semibold">Upload Status:</h3>
+                <pre id="uploadStatus" class="bg-gray-700 p-3 rounded mt-2 text-yellow-400 whitespace-pre-wrap">
+No file uploaded yet...
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchModels() {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/models");
+                const models = await response.json();
+
+                const providerSelect = document.getElementById("provider");
+                const modelSelect = document.getElementById("model");
+                providerSelect.innerHTML = "";
+                modelSelect.innerHTML = "";
+
+                const modelMap = {};
+                models.forEach(model => {
+                    const [provider, modelName] = model.split('/');
+                    if (!modelMap[provider]) {
+                        modelMap[provider] = [];
+                        const option = document.createElement("option");
+                        option.value = provider;
+                        option.textContent = provider;
+                        providerSelect.appendChild(option);
+                    }
+                    modelMap[provider].push(modelName);
+                });
+
+                providerSelect.addEventListener("change", function() {
+                    modelSelect.innerHTML = "";
+                    const selectedProvider = providerSelect.value;
+                    modelMap[selectedProvider].forEach(modelName => {
+                        const option = document.createElement("option");
+                        option.value = modelName;
+                        option.textContent = modelName;
+                        modelSelect.appendChild(option);
+                    });
+                });
+
+                providerSelect.dispatchEvent(new Event("change"));
+            } catch (error) {
+                console.error("Error fetching models:", error);
+            }
+        }
+
+        async function sendRequest() {
+            const provider = document.getElementById("provider").value;
+            const model = document.getElementById("model").value;
+            const prompt = document.getElementById("prompt").value;
+            
+            if (!prompt) {
+                alert("Please enter a prompt!");
+                return;
+            }
+
+            const requestBody = {
+                provider: provider,
+                model: model,
+                prompt: prompt
+            };
+
+            document.getElementById("response").textContent = "⏳ Generating response...";
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                document.getElementById("response").textContent = JSON.stringify(data, null, 4);
+            } catch (error) {
+                document.getElementById("response").textContent = "❌ Error: " + error.message;
+            }
+        }
+
+        async function uploadFile() {
+            const fileInput = document.getElementById("fileInput");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a file to upload.");
+                return;
+            }
+
+            if (file.type !== "application/pdf") {
+                alert("Only PDF files are allowed!");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("file", file);
+
+            document.getElementById("uploadStatus").textContent = "⏳ Uploading file...";
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/upload_file", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                document.getElementById("uploadStatus").textContent = data.message;
+            } catch (error) {
+                document.getElementById("uploadStatus").textContent = "❌ Upload failed: " + error.message;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchModels);
+    </script>
+</body>
+</html>
